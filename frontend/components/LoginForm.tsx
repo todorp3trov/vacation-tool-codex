@@ -56,7 +56,7 @@ export default function LoginForm({ onLoginSuccess }: Props) {
   };
 
   return (
-    <form className="login-form" onSubmit={handleSubmit}>
+    <form className="login-form" onSubmit={handleSubmit} noValidate>
       <h1 className="login-title">Vacation Tool</h1>
       <label className="login-label">
         Username
