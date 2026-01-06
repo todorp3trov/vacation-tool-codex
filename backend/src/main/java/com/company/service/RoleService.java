@@ -29,13 +29,7 @@ public class RoleService {
         if (codes.isEmpty()) {
             return "/";
         }
-        String primary = codes.get(0);
-        return switch (primary) {
-            case "ADMIN" -> "/admin";
-            case "HR" -> "/hr";
-            case "MANAGER" -> "/manager";
-            default -> "/dashboard";
-        };
+        return "/calendar";
     }
 
     public String resolveHomeRouteFromCodes(List<String> codes) {

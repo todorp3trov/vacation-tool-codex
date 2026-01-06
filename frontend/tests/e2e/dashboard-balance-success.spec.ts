@@ -1,4 +1,4 @@
-import { fetchDashboardData } from "../../pages/employee/dashboard";
+import { fetchCalendarData } from "../../pages/calendar";
 
 describe("dashboard-balance-success", () => {
   afterEach(() => {
@@ -7,10 +7,12 @@ describe("dashboard-balance-success", () => {
 
   it("loads dashboard data when backend responds", async () => {
     const payload = {
+      roles: ["EMPLOYEE"],
       balance: { officialBalance: 14, tentativeBalance: 12, unavailable: false },
       myVacations: [],
       teammateVacations: [],
-      holidays: []
+      holidays: [],
+      managerPending: []
     };
     (global as any).fetch = jest.fn().mockResolvedValue({
       ok: true,
@@ -18,7 +20,7 @@ describe("dashboard-balance-success", () => {
       json: () => Promise.resolve(payload)
     });
 
-    const data = await fetchDashboardData({ start: "2024-01-01", end: "2024-01-31" });
+    const data = await fetchCalendarData({ start: "2024-01-01", end: "2024-01-31" });
 
     expect(data.balance.unavailable).toBe(false);
     expect(global.fetch).toHaveBeenCalledTimes(1);

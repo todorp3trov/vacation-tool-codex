@@ -31,6 +31,12 @@ public class DevDataInitializer implements CommandLineRunner {
     @Value("${app.demo-user.role:ADMIN}")
     private String demoRoleCode;
 
+    @Value("${app.seed-sample-users:true}")
+    private boolean seedSampleUsers;
+
+    @Value("${app.sample-user.password:password}")
+    private String samplePassword;
+
     public DevDataInitializer(UserRepository userRepository,
                               RoleRepository roleRepository,
                               PasswordEncoder passwordEncoder) {
@@ -41,17 +47,14 @@ public class DevDataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (!seedDemoUser || userRepository.existsByUsernameIgnoreCase(demoUsername)) {
-            return;
+        if (seedDemoUser) {
+            seedUserIfMissing(demoUsername, demoPassword, "Demo User", demoRoleCode.toUpperCase());
         }
-        Role role = loadOrCreateRole(demoRoleCode.toUpperCase());
-        User user = new User();
-        user.setUsername(demoUsername);
-        user.setPasswordHash(passwordEncoder.encode(demoPassword));
-        user.setDisplayName("Demo User");
-        user.setStatus(UserStatus.ACTIVE);
-        user.setRoles(Set.of(role));
-        userRepository.save(user);
+        if (seedSampleUsers) {
+            seedUserIfMissing("manager1", samplePassword, "Manager One", "MANAGER");
+            seedUserIfMissing("hr1", samplePassword, "HR One", "HR");
+            seedUserIfMissing("employee1", samplePassword, "Employee One", "EMPLOYEE");
+        }
     }
 
     private Role loadOrCreateRole(String code) {
@@ -63,5 +66,19 @@ public class DevDataInitializer implements CommandLineRunner {
         role.setCode(code);
         role.setDescription(code + " auto-created");
         return roleRepository.save(role);
+    }
+
+    private void seedUserIfMissing(String username, String password, String displayName, String roleCode) {
+        if (userRepository.existsByUsernameIgnoreCase(username)) {
+            return;
+        }
+        Role role = loadOrCreateRole(roleCode);
+        User user = new User();
+        user.setUsername(username);
+        user.setPasswordHash(passwordEncoder.encode(password));
+        user.setDisplayName(displayName);
+        user.setStatus(UserStatus.ACTIVE);
+        user.setRoles(Set.of(role));
+        userRepository.save(user);
     }
 }

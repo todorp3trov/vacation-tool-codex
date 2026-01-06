@@ -1,4 +1,4 @@
-import { fetchDashboardData } from "../../pages/employee/dashboard";
+import { fetchCalendarData } from "../../pages/calendar";
 
 describe("dashboard-balance-unavailable", () => {
   afterEach(() => {
@@ -7,10 +7,12 @@ describe("dashboard-balance-unavailable", () => {
 
   it("surfaces unavailable balance flag from API", async () => {
     const payload = {
+      roles: ["EMPLOYEE"],
       balance: { officialBalance: null, tentativeBalance: null, unavailable: true, message: "External system unavailable" },
       myVacations: [],
       teammateVacations: [],
-      holidays: []
+      holidays: [],
+      managerPending: []
     };
     (global as any).fetch = jest.fn().mockResolvedValue({
       ok: true,
@@ -18,7 +20,7 @@ describe("dashboard-balance-unavailable", () => {
       json: () => Promise.resolve(payload)
     });
 
-    const data = await fetchDashboardData({ start: "2024-02-01", end: "2024-02-29" });
+    const data = await fetchCalendarData({ start: "2024-02-01", end: "2024-02-29" });
 
     expect(data.balance.unavailable).toBe(true);
     expect(data.balance.message).toMatch(/unavailable/i);
@@ -31,6 +33,6 @@ describe("dashboard-balance-unavailable", () => {
       json: () => Promise.resolve({})
     });
 
-    await expect(fetchDashboardData({ start: "2024-02-01", end: "2024-02-29" })).rejects.toThrow("unauthorized");
+    await expect(fetchCalendarData({ start: "2024-02-01", end: "2024-02-29" })).rejects.toThrow("unauthorized");
   });
 });

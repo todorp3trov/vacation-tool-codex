@@ -169,6 +169,13 @@ body {
   border-bottom: none;
 }
 
+.vacation-row.selected-row {
+  background: rgba(63, 196, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid var(--accent);
+}
+
 .team-list strong {
   display: block;
 }
@@ -234,6 +241,40 @@ body {
   gap: 6px;
 }
 
+.decision-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.mini-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+}
+
+.mini-list li {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.decision-note {
+  display: block;
+  margin: 12px 0;
+  color: var(--muted);
+}
+
+.decision-note textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+}
+
 .calendar-card {
   grid-column: span 1;
 }
@@ -261,11 +302,22 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  cursor: pointer;
 }
 
 .calendar-cell.empty {
   background: transparent;
   border: none;
+}
+
+.calendar-cell.selected {
+  border-color: var(--accent);
+  background: rgba(109, 211, 255, 0.12);
+  box-shadow: 0 10px 24px rgba(12, 26, 48, 0.35);
+}
+
+.selection-hint {
+  margin-top: 8px;
 }
 
 .cell-header {

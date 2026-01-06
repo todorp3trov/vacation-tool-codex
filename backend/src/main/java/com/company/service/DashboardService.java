@@ -1,7 +1,7 @@
 package com.company.service;
 
 import com.company.dto.DashboardResponse;
-import com.company.integration.VacationBalanceClient;
+import com.company.dto.TentativeBalanceDto;
 import com.company.model.Holiday;
 import com.company.model.HolidayStatus;
 import com.company.model.TeamMembershipStatus;
@@ -12,9 +12,7 @@ import com.company.repos.HolidayRepository;
 import com.company.repos.TeamMembershipRepository;
 import com.company.repos.VacationRequestRepository;
 import jakarta.servlet.http.HttpSession;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,46 +25,29 @@ public class DashboardService {
     private final VacationRequestRepository vacationRequestRepository;
     private final HolidayRepository holidayRepository;
     private final TeamMembershipRepository teamMembershipRepository;
-    private final VacationBalanceClient vacationBalanceClient;
-    private final BalanceSessionCache balanceSessionCache;
+    private final BalanceComputationService balanceComputationService;
     private final AuditService auditService;
 
     public DashboardService(VacationRequestRepository vacationRequestRepository,
                             HolidayRepository holidayRepository,
                             TeamMembershipRepository teamMembershipRepository,
-                            VacationBalanceClient vacationBalanceClient,
-                            BalanceSessionCache balanceSessionCache,
+                            BalanceComputationService balanceComputationService,
                             AuditService auditService) {
         this.vacationRequestRepository = vacationRequestRepository;
         this.holidayRepository = holidayRepository;
         this.teamMembershipRepository = teamMembershipRepository;
-        this.vacationBalanceClient = vacationBalanceClient;
-        this.balanceSessionCache = balanceSessionCache;
+        this.balanceComputationService = balanceComputationService;
         this.auditService = auditService;
     }
 
     public DashboardResponse loadDashboard(UUID userId, HttpSession session, LocalDate startDate, LocalDate endDate) {
-        BalanceSessionCache.BalanceSnapshot cached = balanceSessionCache.getSnapshot(session, userId);
-        VacationBalanceClient.BalanceResult balanceResult;
-        if (cached != null) {
-            balanceResult = cached.unavailable()
-                    ? VacationBalanceClient.BalanceResult.unavailable("cached unavailable")
-                    : VacationBalanceClient.BalanceResult.available(cached.balance());
-        } else {
-            balanceResult = vacationBalanceClient.fetchBalance(userId);
-            if (balanceResult.unavailable()) {
-                balanceSessionCache.storeUnavailable(session, userId);
-            } else {
-                balanceSessionCache.store(session, userId, balanceResult.balance());
-            }
-        }
-
+        TentativeBalanceDto balanceResult = balanceComputationService.computeForUser(userId, session);
         List<VacationRequest> myVacations = vacationRequestRepository.findOverlappingForUser(userId, startDate, endDate);
         List<VacationRequest> teammateVacations = loadTeamVacations(userId, startDate, endDate);
         List<Holiday> holidays = holidayRepository.findForRange(HolidayStatus.IMPORTED, startDate, endDate);
 
         DashboardResponse response = new DashboardResponse(
-                toBalanceSummary(balanceResult, myVacations),
+                toBalanceSummary(balanceResult),
                 myVacations.stream().map(v -> toVacationItem(v, true)).toList(),
                 teammateVacations.stream().map(v -> toVacationItem(v, false)).toList(),
                 holidays.stream().map(this::toHolidayItem).toList()
@@ -106,21 +87,13 @@ public class DashboardService {
         );
     }
 
-    private DashboardResponse.BalanceSummary toBalanceSummary(VacationBalanceClient.BalanceResult balanceResult,
-                                                              List<VacationRequest> myVacations) {
-        BigDecimal official = balanceResult.unavailable() ? null : balanceResult.balance();
-        BigDecimal tentative = null;
-        if (official != null) {
-            long pendingDays = myVacations.stream()
-                    .filter(v -> v.getStatus() == VacationRequestStatus.PENDING)
-                    .mapToLong(this::dayCount)
-                    .sum();
-            tentative = official.subtract(BigDecimal.valueOf(pendingDays));
-            if (tentative.compareTo(BigDecimal.ZERO) < 0) {
-                tentative = BigDecimal.ZERO;
-            }
-        }
-        return new DashboardResponse.BalanceSummary(official, tentative, balanceResult.unavailable(), balanceResult.reason());
+    private DashboardResponse.BalanceSummary toBalanceSummary(TentativeBalanceDto balanceResult) {
+        return new DashboardResponse.BalanceSummary(
+                balanceResult.officialBalance(),
+                balanceResult.tentativeBalance(),
+                balanceResult.unavailable(),
+                balanceResult.message()
+        );
     }
 
     private DashboardResponse.VacationItem toVacationItem(VacationRequest request, boolean mine) {
@@ -136,9 +109,5 @@ public class DashboardService {
 
     private DashboardResponse.HolidayItem toHolidayItem(Holiday holiday) {
         return new DashboardResponse.HolidayItem(holiday.getId(), holiday.getDate(), holiday.getName());
-    }
-
-    private long dayCount(VacationRequest request) {
-        return ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate()) + 1;
     }
 }

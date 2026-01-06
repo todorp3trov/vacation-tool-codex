@@ -36,9 +36,18 @@ public class VacationRequest {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
+    @Column(name = "number_of_days", nullable = false)
+    private int numberOfDays;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private VacationRequestStatus status;
+
+    @Column(name = "submitted_at")
+    private Instant submittedAt;
+
+    @Column(name = "request_code", length = 80)
+    private String requestCode;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -102,6 +111,30 @@ public class VacationRequest {
 
     public void setStatus(VacationRequestStatus status) {
         this.status = status;
+    }
+
+    public int getNumberOfDays() {
+        return numberOfDays;
+    }
+
+    public void setNumberOfDays(int numberOfDays) {
+        this.numberOfDays = numberOfDays;
+    }
+
+    public Instant getSubmittedAt() {
+        return submittedAt;
+    }
+
+    public void setSubmittedAt(Instant submittedAt) {
+        this.submittedAt = submittedAt;
+    }
+
+    public String getRequestCode() {
+        return requestCode;
+    }
+
+    public void setRequestCode(String requestCode) {
+        this.requestCode = requestCode;
     }
 
     public Instant getCreatedAt() {

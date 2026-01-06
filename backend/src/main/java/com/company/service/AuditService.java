@@ -31,4 +31,42 @@ public class AuditService {
             log.warn("Failed to persist audit log for dashboard view: {}", ex.getMessage());
         }
     }
+
+    public void recordSubmission(UUID actorId, UUID requestId, String requestCode, int numberOfDays) {
+        AuditLog logEntry = new AuditLog();
+        logEntry.setActorId(actorId);
+        logEntry.setActionType(AuditActionType.VACATION_REQUEST_SUBMITTED);
+        logEntry.setEntityType("VACATION_REQUEST");
+        logEntry.setEntityId(requestId != null ? requestId.toString() : requestCode);
+        logEntry.setDetails("days=" + numberOfDays + ", code=" + requestCode);
+        persistSafely(logEntry, "vacation submission");
+    }
+
+    public void recordSubmissionBlocked(UUID actorId, String reason) {
+        AuditLog logEntry = new AuditLog();
+        logEntry.setActorId(actorId);
+        logEntry.setActionType(AuditActionType.VACATION_REQUEST_SUBMISSION_BLOCKED);
+        logEntry.setEntityType("VACATION_REQUEST");
+        logEntry.setEntityId("SUBMISSION");
+        logEntry.setDetails(reason);
+        persistSafely(logEntry, "submission blocked");
+    }
+
+    public void recordDecision(UUID actorId, UUID requestId, String requestCode, boolean approved, String note) {
+        AuditLog logEntry = new AuditLog();
+        logEntry.setActorId(actorId);
+        logEntry.setActionType(approved ? AuditActionType.VACATION_REQUEST_APPROVED : AuditActionType.VACATION_REQUEST_DENIED);
+        logEntry.setEntityType("VACATION_REQUEST");
+        logEntry.setEntityId(requestId != null ? requestId.toString() : requestCode);
+        logEntry.setDetails(note);
+        persistSafely(logEntry, approved ? "approval" : "denial");
+    }
+
+    private void persistSafely(AuditLog logEntry, String context) {
+        try {
+            auditLogRepository.save(logEntry);
+        } catch (Exception ex) {
+            log.warn("Failed to persist audit log for {}: {}", context, ex.getMessage());
+        }
+    }
 }

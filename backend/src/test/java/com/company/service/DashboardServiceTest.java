@@ -1,7 +1,7 @@
 package com.company.service;
 
 import com.company.dto.DashboardResponse;
-import com.company.integration.VacationBalanceClient;
+import com.company.dto.TentativeBalanceDto;
 import com.company.model.Holiday;
 import com.company.model.HolidayStatus;
 import com.company.model.User;
@@ -17,7 +17,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,10 +40,7 @@ class DashboardServiceTest {
     private TeamMembershipRepository teamMembershipRepository;
 
     @Mock
-    private VacationBalanceClient vacationBalanceClient;
-
-    @Mock
-    private BalanceSessionCache balanceSessionCache;
+    private BalanceComputationService balanceComputationService;
 
     @Mock
     private AuditService auditService;
@@ -76,9 +72,9 @@ class DashboardServiceTest {
         holiday.setName("Mid-June Holiday");
         holiday.setStatus(HolidayStatus.IMPORTED);
 
-        when(balanceSessionCache.getSnapshot(session, userId)).thenReturn(null);
-        when(vacationBalanceClient.fetchBalance(userId))
-                .thenReturn(VacationBalanceClient.BalanceResult.available(BigDecimal.valueOf(15)));
+        when(balanceComputationService.computeForUser(userId, session)).thenReturn(
+                new TentativeBalanceDto(BigDecimal.valueOf(15), BigDecimal.valueOf(13), false, null)
+        );
         when(vacationRequestRepository.findOverlappingForUser(userId, start, end)).thenReturn(List.of(pending));
         when(teamMembershipRepository.findActiveTeamIdsForUser(any(), any(), any()))
                 .thenReturn(List.of(UUID.randomUUID()));
@@ -97,9 +93,6 @@ class DashboardServiceTest {
                 .contains("Bob Teammate");
         assertThat(response.holidays()).hasSize(1);
 
-        ArgumentCaptor<BigDecimal> storedBalance = ArgumentCaptor.forClass(BigDecimal.class);
-        verify(balanceSessionCache).store(any(), any(), storedBalance.capture());
-        assertThat(storedBalance.getValue()).isEqualByComparingTo("15");
         verify(auditService).recordDashboardView(userId, false);
     }
 

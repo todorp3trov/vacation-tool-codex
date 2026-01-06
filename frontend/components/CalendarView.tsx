@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { HolidayItem, VacationItem } from "../types/dashboard";
 
 type Props = {
@@ -7,6 +8,7 @@ type Props = {
   holidays: HolidayItem[];
   loading?: boolean;
   onRangeChange?: (range: { start: string; end: string }) => void;
+  onDraftCreate?: (range: { start: string; end: string }) => void;
 };
 
 const statusClass = (status: string) => {
@@ -22,7 +24,12 @@ const statusClass = (status: string) => {
   }
 };
 
-const toIso = (date: Date) => date.toISOString().split("T")[0];
+const toIso = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function CalendarView({
   rangeStart,
@@ -30,8 +37,11 @@ export default function CalendarView({
   teammateVacations,
   holidays,
   loading,
-  onRangeChange
+  onRangeChange,
+  onDraftCreate
 }: Props) {
+  const [draftStart, setDraftStart] = useState<string | null>(null);
+  const [hoverIso, setHoverIso] = useState<string | null>(null);
   const startDate = new Date(rangeStart);
   const year = startDate.getFullYear();
   const month = startDate.getMonth();
@@ -57,6 +67,32 @@ export default function CalendarView({
     const iso = toIso(new Date(year, month, day));
     calendarDays.push({ day, iso });
   }
+
+  const handleSelect = (iso: string) => {
+    if (!draftStart) {
+      setDraftStart(iso);
+      return;
+    }
+    const start = draftStart < iso ? draftStart : iso;
+    const end = draftStart < iso ? iso : draftStart;
+    onDraftCreate?.({ start, end });
+    setDraftStart(null);
+    setHoverIso(null);
+  };
+
+  const inSelection = (iso: string) => {
+    if (draftStart && hoverIso) {
+      const start = draftStart < hoverIso ? draftStart : hoverIso;
+      const end = draftStart < hoverIso ? hoverIso : draftStart;
+      return iso >= start && iso <= end;
+    }
+    return false;
+  };
+
+  const resetSelection = () => {
+    setDraftStart(null);
+    setHoverIso(null);
+  };
 
   return (
     <div className="calendar-card">
@@ -89,8 +125,15 @@ export default function CalendarView({
           const holidaysForDay = holidays.filter((h) => h.date === cell.iso);
           const myForDay = myVacations.filter((v) => isWithinRange(cell.iso, v.startDate, v.endDate));
           const teamForDay = teammateVacations.filter((v) => isWithinRange(cell.iso, v.startDate, v.endDate));
+          const selected = inSelection(cell.iso);
           return (
-            <div key={cell.iso} className="calendar-cell">
+            <div
+              key={cell.iso}
+              className={`calendar-cell ${selected ? "selected" : ""}`}
+              onClick={() => handleSelect(cell.iso)}
+              onMouseEnter={() => setHoverIso(cell.iso)}
+              onMouseLeave={() => setHoverIso(null)}
+            >
               <div className="cell-header">
                 <span className="day-number">{cell.day}</span>
                 {holidaysForDay.map((h) => (
@@ -127,6 +170,14 @@ export default function CalendarView({
           );
         })}
       </div>
+      {draftStart && (
+        <div className="muted selection-hint">
+          Click another date to finish your draft selection.{" "}
+          <button className="ghost-btn small" onClick={resetSelection}>
+            Reset
+          </button>
+        </div>
+      )}
     </div>
   );
 }
