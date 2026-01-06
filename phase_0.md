@@ -1,0 +1,99 @@
+- **P0-T01 — Contract Readiness Gate — Auth & RBAC**
+  - Description: Produce the complete Contract required before implementation: Semantic contract (login flow: Trigger->Guards->State change->Outputs->Failure behavior), Data contract (authoritative schema using EPIC-FR-001 data_specification for User & Role, serialization, required/optional fields, defaults, invariants, versioning), Interface contract (public backend APIs: POST /api/login, POST /api/logout, session cookie semantics, RBAC guard behavior), Temporal contract (ordering for login→role-loading→routing, idempotency for login attempts, concurrency policy), Verification contract (measurement + mapped tests). Output: a single docs/contract/auth-rbac-contract.md containing all items. If any detail missing, the task must list explicit questions for product/PO.
+  - depends_on: []
+  - stories: [US-001, US-002, US-003, US-004, US-005, FR-001.1, FR-001.2, FR-001.3, FR-001.4, FR-001.5, FR-001.6, FR-001.7, FR-001.8, FR-001.9, FR-001.10]
+  - files_modules:
+    - docs/contract/auth-rbac-contract.md
+    - backend/src/main/java/com/company/auth/ContractSpecification.java
+    - backend/src/main/resources/db/schema-user-role.sql
+  - tests:
+    - contract/validation/checklist (manual review)
+    - unit:ContractParsingTest (automated assertions on produced JSON/YAML contract)
+  - acceptance:
+    - Document includes a Semantic contract for the login flow with explicit failure behavior and error messages.
+    - Data contract includes EPIC-FR-001 User and Role schemas (fields, required/optional, defaults) and serialization format.
+    - Interface contract enumerates endpoints, signatures, cookie rules, and RBAC enforcement points.
+    - Verification contract maps acceptance criteria to measurable tests; outstanding questions are listed.
+
+- **P0-T02 — Repository, DB schema & local dev setup**
+  - Description: Create monorepo skeleton with frontend (Next.js) and backend (Spring Boot) modules. Implement PostgreSQL schema scripts for User and Role per EPIC-FR-001 data_specification and a DB migration stub. Provide local docker-compose for single-node runtime (Spring Boot + Postgres) per ADR-001.
+  - depends_on: [P0-T01]
+  - stories: [FR-001.1, FR-006.1]
+  - files_modules:
+    - docker-compose.yml
+    - backend/pom.xml (or build.gradle)
+    - backend/src/main/resources/db/migrations/V1__create_user_role.sql
+    - frontend/package.json
+    - README.md
+  - tests:
+    - integration:local-compose-healthy (start compose and verify services up)
+    - unit:DBSchemaValidationTest
+  - acceptance:
+    - docker-compose brings up Spring Boot and PostgreSQL and migrations run successfully.
+    - Database contains User and Role tables matching EPIC-FR-001 fields.
+    - Repo README documents local dev startup steps.
+
+- **P0-T03 — Backend: Authentication endpoints + session store**
+  - Description: Implement backend endpoints: POST /api/login and POST /api/logout using Spring Security with session creation. Implement UserRepository (JPA) reading User by username. Password verification uses bcrypt/Argon2 per ADR-002 (configurable). Session cookie set Secure + HttpOnly. Implement server-side session binding to User.id and roles.
+  - depends_on: [P0-T01, P0-T02]
+  - stories: [US-002, FR-001.3, FR-001.4, FR-001.9, FR-006.4]
+  - files_modules:
+    - backend/src/main/java/com/company/auth/LoginController.java
+    - backend/src/main/java/com/company/auth/SecurityConfig.java
+    - backend/src/main/java/com/company/repos/UserRepository.java
+    - backend/src/main/java/com/company/model/User.java
+    - backend/src/main/java/com/company/service/SessionService.java
+  - tests:
+    - unit:LoginControllerTest (successful + failure flows)
+    - integration:AuthSessionIntegrationTest (end-to-end via localhost)
+  - acceptance:
+    - POST /api/login establishes server-side session on valid ACTIVE credentials and returns redirect target.
+    - Invalid credentials or DISABLED users return generic error, no session created.
+    - Session cookie contains HttpOnly and Secure flags.
+
+- **P0-T04 — Backend: Role loading & RBAC guard**
+  - Description: On successful authentication, load Role assignments for the user and store role list in session. Implement a centralized RBAC filter/interceptor (INT-AUTH-RBAC) that enforces role checks on protected endpoints and returns consistent authorization errors. Include unit tests for multi-role sessions (e.g., Manager+HR). Reference ADR-001 and ADR-002 in implementation notes.
+  - depends_on: [P0-T01, P0-T03]
+  - stories: [US-003, FR-001.5, FR-001.8, FR-004.1]
+  - files_modules:
+    - backend/src/main/java/com/company/security/RbacFilter.java
+    - backend/src/main/java/com/company/service/RoleService.java
+    - backend/src/main/java/com/company/model/Role.java
+  - tests:
+    - unit:RoleServiceTest
+    - integration:RbacFilterIntegrationTest
+  - acceptance:
+    - Session contains loaded roles and effective permissions computed.
+    - RBAC filter denies access to protected endpoints when roles missing and allows when present.
+    - Multi-role sessions (Manager+HR) include both permissions.
+
+- **P0-T05 — Frontend: Login page (Next.js SSR) + routing stub**
+  - Description: Implement the public login page with username/password fields, client-side required-field validation, and single submit control. On successful authentication, perform redirect based on server-provided home route. Implement client-side prevention of duplicate submissions and loading state. Keep page SSR-friendly per Next.js SSR guidance.
+  - depends_on: [P0-T01, P0-T02]
+  - stories: [US-001, FR-001.1, FR-001.9]
+  - files_modules:
+    - frontend/pages/login.tsx
+    - frontend/components/LoginForm.tsx
+    - frontend/styles/login.css
+  - tests:
+    - unit:LoginForm.test (validation + submit disabled during in-flight)
+    - e2e:LoginSmokeTest (headless browser to POST and assert redirect)
+  - acceptance:
+    - Login page displays required fields and client-side validation prevents empty submit.
+    - Submit button shows loading and prevents duplicate submits.
+    - Generic error from backend is shown as "Invalid username or password".
+
+- **P0-T06 — CI, linting, and basic e2e smoke pipeline**
+  - Description: Add CI pipeline steps for building backend and frontend, running unit tests, and a single headless e2e smoke test that attempts a full login flow against a test container. Ensure secrets/config are templated and not stored in repo.
+  - depends_on: [P0-T02, P0-T03, P0-T05]
+  - stories: [FR-001.4, FR-001.9]
+  - files_modules:
+    - .github/workflows/ci.yml
+    - ci/scripts/start-test-environment.sh
+    - ci/scripts/run-e2e.sh
+  - tests:
+    - ci:e2e-login-smoke
+    - ci:unit (run all unit tests)
+  - acceptance:
+    - CI builds backend and frontend, runs unit tests, and executes the login e2e smoke test on merge.
+    - Failing tests block merge; pipeline documents required environment variables.

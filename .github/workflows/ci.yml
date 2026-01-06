@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Backend tests
+        run: |
+          cd backend
+          mvn -B test
+
+      - name: Frontend tests
+        run: |
+          cd frontend
+          npm install
+          npm test -- --runInBand
+
+      - name: Start test environment
+        run: |
+          chmod +x ci/scripts/*.sh
+          ./ci/scripts/start-test-environment.sh
+
+      - name: Login smoke test
+        env:
+          E2E_USERNAME: demo
+          E2E_PASSWORD: password
+        run: |
+          ./ci/scripts/run-e2e.sh
+
+      - name: Tear down
+        if: always()
+        run: docker compose down

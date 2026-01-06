@@ -1,0 +1,17 @@
+# Build artifacts
+target/
+**/target/
+**/.gradle/
+**/.idea/
+**/.vscode/
+*.log
+
+# Node/Next.js
+node_modules/
+frontend/.next/
+frontend/.turbo/
+frontend/.eslintcache
+frontend/coverage/
+
+# Mac/Linux noise
+.DS_Store

@@ -1,0 +1,511 @@
+{
+  "glossary_document": {
+    "document_type": "Glossary",
+    "version": "1.0",
+    "terms": [
+      {
+        "term": "Employee",
+        "definition": "A regular worker who uses the Vacation Tool primarily to view their vacation balance and submit vacation requests. Employees are the starting point of the vacation workflow and depend on the system to replace paper-based request processes.",
+        "synonyms": [
+          "Staff Member",
+          "Worker",
+          "Vacation Requester"
+        ],
+        "related_terms": [
+          "User",
+          "Manager",
+          "Vacation Request",
+          "Employee Vacation Dashboard and Calendar"
+        ],
+        "source_quote": "\"Employee\", \"role\": \"Regular employee / vacation requester\""
+      },
+      {
+        "term": "Manager",
+        "definition": "A people manager responsible for reviewing and deciding on vacation requests from their team members. Managers provide the authoritative approval or denial that drives visibility for employees and triggers HR processing.",
+        "synonyms": [
+          "Line Manager",
+          "People Manager",
+          "Approver",
+          "Team Lead"
+        ],
+        "related_terms": [
+          "Employee",
+          "User",
+          "Manager Approval/Denial Workflow",
+          "Manager Calendar View with Pending Requests"
+        ],
+        "source_quote": "\"Manager\", \"role\": \"People manager / approver\""
+      },
+      {
+        "term": "HR",
+        "definition": "The Human Resources role that processes only manager-approved vacation requests, adds internal notes, and marks them as processed. HR relies on the tool to receive clear, finalized decisions and avoid manual reconciliation with other systems.",
+        "synonyms": [
+          "Human Resources",
+          "HR Processor",
+          "HR Staff"
+        ],
+        "related_terms": [
+          "Employee",
+          "User",
+          "HR Processing Area for Approved Requests",
+          "Manager Approval/Denial Workflow"
+        ],
+        "source_quote": "\"HR\", \"role\": \"Human Resources processor\""
+      },
+      {
+        "term": "Admin",
+        "definition": "The system administrator who configures the company setup, manages users and roles, and controls integrations such as national holiday imports. The Admin ensures the Vacation Tool is correctly set up so other roles can perform their vacation-related tasks.",
+        "synonyms": [
+          "Administrator",
+          "System Admin",
+          "Company Configuration Owner"
+        ],
+        "related_terms": [
+          "User",
+          "Admin Configuration for Users and Roles",
+          "Admin Integration Controls for National Holidays",
+          "IntegrationConfig"
+        ],
+        "source_quote": "\"Admin\", \"role\": \"System administrator / company configuration owner\""
+      },
+      {
+        "term": "User",
+        "definition": "Any person who logs into the Vacation Tool, including Employees, Managers, HR, and Admins, each with specific permissions. Users authenticate with credentials defined by the Admin so the system can control who sees and does what.",
+        "synonyms": [
+          "System User",
+          "Account",
+          "End User"
+        ],
+        "related_terms": [
+          "Role",
+          "User Authentication and Role-Based Access",
+          "Employee",
+          "Manager",
+          "HR",
+          "Admin"
+        ],
+        "source_quote": "\"Represents a system user (employee, manager, HR, admin) with login credentials and role assignments.\""
+      },
+      {
+        "term": "Role",
+        "definition": "A defined set of permissions (Employee, Manager, HR, Admin) that determines what a user can see and do in the Vacation Tool. Roles enable a clear separation of responsibilities and protect sensitive information such as team balances and HR processing notes.",
+        "synonyms": [
+          "User Role",
+          "Permission Role",
+          "Access Role"
+        ],
+        "related_terms": [
+          "User",
+          "Role-Based Access Control",
+          "User Authentication and Role-Based Access"
+        ],
+        "source_quote": "\"Core user roles for v1 are Employee, Manager, HR, and Admin; all are employees with different permissions.\""
+      },
+      {
+        "term": "Employee Vacation Dashboard and Calendar",
+        "definition": "The main screen for Employees that shows their remaining vacation days and an interactive calendar with holidays and teammates\u2019 vacations. This dashboard is where employees understand their availability and initiate new vacation requests.",
+        "synonyms": [
+          "Employee Dashboard",
+          "Employee Calendar View",
+          "Vacation Overview"
+        ],
+        "related_terms": [
+          "Vacation Request",
+          "Display of National Holidays in Calendars",
+          "Team Vacation Visibility",
+          "Employee"
+        ],
+        "source_quote": "\"Employee-facing dashboard showing remaining vacation days and an interactive calendar with national holidays and teammates\u2019 vacations; supports selecting dates for new requests.\""
+      },
+      {
+        "term": "Manager Calendar View with Pending Requests",
+        "definition": "A calendar view for Managers that shows their team members\u2019 vacations and highlights pending requests. It helps managers make informed approval decisions by seeing overlapping absences in context.",
+        "synonyms": [
+          "Manager Calendar",
+          "Team Vacation Calendar",
+          "Manager View"
+        ],
+        "related_terms": [
+          "Manager",
+          "Team Vacation Visibility",
+          "Pending Request Visualization and Tentative Balance Adjustment"
+        ],
+        "source_quote": "\"Manager view of calendar showing team members\u2019 vacations and highlighting pending requests differently.\""
+      },
+      {
+        "term": "Vacation Request",
+        "definition": "A formal request submitted by an employee to take time off for specific dates, which passes through submission, approval/denial, and HR processing states. It is the central business object that connects employees, managers, HR, and the external vacation-balance system.",
+        "synonyms": [
+          "Time-Off Request",
+          "Leave Request",
+          "PTO Request"
+        ],
+        "related_terms": [
+          "Vacation Request Creation and Validation",
+          "Manager Approval/Denial Workflow",
+          "HR Processing Area for Approved Requests",
+          "VacationRequest"
+        ],
+        "source_quote": "\"VacationRequest\", \"description\": \"Represents a vacation request from an employee with lifecycle state.\""
+      },
+      {
+        "term": "VacationRequest (Entity)",
+        "definition": "The system record that stores all data for a single vacation request, including dates, employee, status (pending, approved, denied, processed), and audit information. It enables tracking, visualization, and integration with external balance systems.",
+        "synonyms": [
+          "Vacation Request Record",
+          "Request Entity",
+          "Leave Request Object"
+        ],
+        "related_terms": [
+          "Vacation Request",
+          "AuditLog",
+          "Integration with External Vacation-Balance System"
+        ],
+        "source_quote": "\"VacationRequest\", \"description\": \"Represents a vacation request from an employee with lifecycle state.\""
+      },
+      {
+        "term": "Holiday",
+        "definition": "A national holiday imported from an external system and displayed on calendars so vacation planning can avoid conflicts with non-working days. Holidays improve accuracy of scheduling and visibility across employees and managers.",
+        "synonyms": [
+          "National Holiday",
+          "Public Holiday",
+          "Bank Holiday"
+        ],
+        "related_terms": [
+          "Admin Integration Controls for National Holidays",
+          "Display of National Holidays in Calendars"
+        ],
+        "source_quote": "\"Holiday\", \"description\": \"Imported national holiday from external system.\""
+      },
+      {
+        "term": "Team",
+        "definition": "A logical grouping of users used to decide whose vacations are visible to each other in the calendar views. Teams structure the visibility and approval relationships in the Vacation Tool.",
+        "synonyms": [
+          "Department",
+          "Group",
+          "Squad",
+          "Org Unit"
+        ],
+        "related_terms": [
+          "TeamMembership",
+          "Team Vacation Visibility",
+          "Manager"
+        ],
+        "source_quote": "\"Team\", \"description\": \"Logical grouping of users used to define 'teammates' whose vacations are visible to each other (exact model TBD).\""
+      },
+      {
+        "term": "TeamMembership",
+        "definition": "The link between a user and a team that determines which teammates\u2019 vacations that user can see. It underpins the \u2018team\u2019 concept for visibility without exposing all company-wide data.",
+        "synonyms": [
+          "Team Assignment",
+          "Membership Record",
+          "Team-User Association"
+        ],
+        "related_terms": [
+          "Team",
+          "User",
+          "Team Vacation Visibility"
+        ],
+        "source_quote": "\"TeamMembership\", \"description\": \"Association between Users and Teams used for teammate visibility.\""
+      },
+      {
+        "term": "IntegrationConfig",
+        "definition": "Configuration data that stores endpoints, credentials, and options for external systems such as vacation-balance and holiday APIs. It allows Admins to manage integrations without changing the core application logic.",
+        "synonyms": [
+          "Integration Configuration",
+          "API Settings",
+          "External System Config"
+        ],
+        "related_terms": [
+          "Admin Integration Controls for National Holidays",
+          "Integration with External Vacation-Balance System"
+        ],
+        "source_quote": "\"IntegrationConfig\", \"description\": \"Configuration metadata for external integrations such as endpoints and authentication details.\""
+      },
+      {
+        "term": "AuditLog",
+        "definition": "A record of key actions such as vacation submission, approval, denial, and processing. The audit log supports traceability and helps resolve disputes about who did what and when.",
+        "synonyms": [
+          "Activity Log",
+          "Change Log",
+          "History Log"
+        ],
+        "related_terms": [
+          "VacationRequest",
+          "Manager Approval/Denial Workflow",
+          "HR Processing Area for Approved Requests"
+        ],
+        "source_quote": "\"AuditLog\", \"description\": \"Log of key actions such as request submission, approval, denial, and processing (model TBD).\""
+      },
+      {
+        "term": "Vacation Request Creation and Validation",
+        "definition": "The process in which an employee selects from/to dates for a vacation, and the system checks remaining days and minimum notice before allowing submission. This ensures only feasible, rule-compliant requests enter the workflow.",
+        "synonyms": [
+          "Request Submission",
+          "Request Entry",
+          "Vacation Request Form"
+        ],
+        "related_terms": [
+          "Vacation Request",
+          "Minimum Notice Rule Enforcement",
+          "Integration with External Vacation-Balance System"
+        ],
+        "source_quote": "\"Employees select from/to dates; system validates sufficient remaining days via external system and enforces two-week minimum notice before allowing submission.\""
+      },
+      {
+        "term": "Pending Request Visualization and Tentative Balance Adjustment",
+        "definition": "The behavior where submitted but not yet approved vacation days appear as pending on the calendar and are tentatively subtracted from the employee\u2019s balance. This gives all parties a realistic view of upcoming absences while still indicating that they are not final.",
+        "synonyms": [
+          "Pending Request Display",
+          "Provisional Booking View",
+          "Tentative Deduction"
+        ],
+        "related_terms": [
+          "Vacation Request",
+          "Employee Vacation Dashboard and Calendar",
+          "Manager Calendar View with Pending Requests"
+        ],
+        "source_quote": "\"After submission, requested days are tentatively subtracted and shown as pending on the calendar with distinct visuals until approved or denied.\""
+      },
+      {
+        "term": "Manager Approval/Denial Workflow",
+        "definition": "The step where managers review pending vacation requests listed with key details and take approve or deny actions that are final from a business decision standpoint. This workflow is the authoritative gate between employee intent and HR processing.",
+        "synonyms": [
+          "Approval Process",
+          "Manager Review Flow",
+          "Request Decision Workflow"
+        ],
+        "related_terms": [
+          "Vacation Request",
+          "HR Processing Area for Approved Requests",
+          "Manager"
+        ],
+        "source_quote": "\"Dedicated manager menu/tab listing pending requests with key details and approve/deny actions. Manager decisions are authoritative and cannot be overridden by HR.\""
+      },
+      {
+        "term": "HR Processing Area for Approved Requests",
+        "definition": "A dedicated HR workspace that shows only manager-approved vacation requests, where HR can add internal notes and mark them as processed. It simplifies HR work by filtering out unapproved items and clarifying the final step in the flow.",
+        "synonyms": [
+          "HR Queue",
+          "HR Processing Tab",
+          "Approved Requests View"
+        ],
+        "related_terms": [
+          "Vacation Request",
+          "Manager Approval/Denial Workflow",
+          "HR"
+        ],
+        "source_quote": "\"HR-specific tab showing only manager-approved requests, where HR can add internal notes and mark as processed.\""
+      },
+      {
+        "term": "Admin Configuration for Users and Roles",
+        "definition": "The admin interface used to create, update, and delete users, assign roles, and set core user details like vacation days and credentials. It centralizes ownership of user setup so that permissions and balances start from a reliable baseline.",
+        "synonyms": [
+          "User Management",
+          "Role Management",
+          "Admin User Setup"
+        ],
+        "related_terms": [
+          "User",
+          "Role",
+          "User Authentication and Role-Based Access",
+          "IntegrationConfig"
+        ],
+        "source_quote": "\"Admin tab to add/delete users, assign roles, specify user details (name, role, vacation days), and update credentials.\""
+      },
+      {
+        "term": "Admin Integration Controls for National Holidays",
+        "definition": "The admin tools that load national holidays from an external API by selecting a year and importing JSON. These controls keep holiday data current without manual entry and ensure calendars reflect official non-working days.",
+        "synonyms": [
+          "Holiday Import",
+          "Holiday Integration Settings",
+          "Load Year Action"
+        ],
+        "related_terms": [
+          "Holiday",
+          "Display of National Holidays in Calendars",
+          "IntegrationConfig"
+        ],
+        "source_quote": "\"Admin UI to load national holidays from an external API by selecting a year and importing JSON.\""
+      },
+      {
+        "term": "User Authentication and Role-Based Access",
+        "definition": "The login mechanism where users enter an admin-defined username and password, and the system grants permissions based on their role. This protects the application and ensures that each user sees only the information relevant to their responsibilities.",
+        "synonyms": [
+          "Login",
+          "Authentication",
+          "Access Control"
+        ],
+        "related_terms": [
+          "Role-Based Access Control",
+          "Role",
+          "Admin Configuration for Users and Roles"
+        ],
+        "source_quote": "\"Simple login mechanism with username/password defined by admin and role assignments (Employee, Manager, HR, Admin) determining permissions.\""
+      },
+      {
+        "term": "Integration with External Vacation-Balance System",
+        "definition": "An API-based connection to a separate system that stores official vacation balances, used to read remaining days and deduct approved time off. This integration makes the external system the source of truth while still providing a smooth user experience in Vacation Tool.",
+        "synonyms": [
+          "Vacation Balance Integration",
+          "External PTO System",
+          "Balance API"
+        ],
+        "related_terms": [
+          "Blocking Behavior on External System Downtime",
+          "Vacation Request Creation and Validation",
+          "VacationRequest (Entity)"
+        ],
+        "source_quote": "\"API-based integration to read remaining vacation days and deduct approved days when requests are finalized.\""
+      },
+      {
+        "term": "Blocking Behavior on External System Downtime",
+        "definition": "The rule that if the external vacation-balance system cannot be reached, the Vacation Tool must prevent actions like submissions, approvals, or deductions that depend on it and instead show a clear error. This protects alignment between systems by avoiding changes that cannot be recorded externally.",
+        "synonyms": [
+          "Downtime Blocking",
+          "Fail-Closed Behavior",
+          "External System Unavailability Handling"
+        ],
+        "related_terms": [
+          "Integration with External Vacation-Balance System",
+          "Error Handling",
+          "Business Rules"
+        ],
+        "source_quote": "\"Detect unreachability of external vacation-balance system and block submission, approvals, or deductions that depend on it, showing a clear error instead of proceeding.\""
+      },
+      {
+        "term": "Display of National Holidays in Calendars",
+        "definition": "The feature that shows imported national holidays directly on employee and manager calendars. This visual context helps avoid planning vacations on days that are already public holidays.",
+        "synonyms": [
+          "Holiday Calendar Display",
+          "Public Holidays on Calendar"
+        ],
+        "related_terms": [
+          "Holiday",
+          "Admin Integration Controls for National Holidays",
+          "Employee Vacation Dashboard and Calendar"
+        ],
+        "source_quote": "\"Imported national holidays displayed on employee and manager calendars.\""
+      },
+      {
+        "term": "Team Vacation Visibility",
+        "definition": "The ability for employees to see their teammates\u2019 scheduled vacations on their own calendar. This transparency helps teams coordinate absences and avoid understaffing periods.",
+        "synonyms": [
+          "Teammate Visibility",
+          "Team Calendar Sharing",
+          "Peer Vacation View"
+        ],
+        "related_terms": [
+          "Team",
+          "TeamMembership",
+          "Manager Calendar View with Pending Requests"
+        ],
+        "source_quote": "\"Employees can see teammates\u2019 vacation days on their calendar; definition of 'team' to be clarified.\""
+      },
+      {
+        "term": "Minimum Notice Rule Enforcement",
+        "definition": "The strict rule that all vacation requests must be submitted at least two weeks before the start date, enforced automatically at submission time. This prevents last-minute requests and gives managers and HR predictable lead time.",
+        "synonyms": [
+          "Two-Week Notice Rule",
+          "Lead Time Requirement",
+          "Advance Notice Policy"
+        ],
+        "related_terms": [
+          "Vacation Request Creation and Validation",
+          "Business Rules"
+        ],
+        "source_quote": "\"Enforce a rule that all vacation requests must be submitted at least two weeks before the start date.\""
+      },
+      {
+        "term": "Tentative Balance Adjustment",
+        "definition": "The provisional subtraction of requested vacation days from an employee\u2019s remaining balance immediately after submission, before manager approval. It shows employees and managers a more realistic remaining balance while keeping the deduction reversible.",
+        "synonyms": [
+          "Provisional Deduction",
+          "Pending Balance Adjustment",
+          "Temporary Balance Hold"
+        ],
+        "related_terms": [
+          "Pending Request Visualization and Tentative Balance Adjustment",
+          "Integration with External Vacation-Balance System"
+        ],
+        "source_quote": "\"Upon submitting a request, the requested days are tentatively subtracted from the employee\u2019s remaining balance and shown as not finalized until approved.\""
+      },
+      {
+        "term": "Role-Based Access Control",
+        "definition": "The security model in which the system shows and allows actions based on the user\u2019s role, such as managers seeing team balances or HR seeing only approved requests. It ensures sensitive information is only available to the right audiences.",
+        "synonyms": [
+          "RBAC",
+          "Permission Model",
+          "Role-Based Permissions"
+        ],
+        "related_terms": [
+          "Role",
+          "User Authentication and Role-Based Access",
+          "Manager-Only View of Team Vacation Balances"
+        ],
+        "source_quote": "\"Role-based access control is enforced so that managers see team balances, HR sees approved requests, and admins see and do everything.\""
+      },
+      {
+        "term": "Manager-Only View of Team Vacation Balances",
+        "definition": "A restricted view where only managers can see the remaining vacation days for each employee under their responsibility. This supports informed approval decisions without exposing balances to the entire organization.",
+        "synonyms": [
+          "Team Balance View",
+          "Manager Balance Dashboard",
+          "Team PTO Overview"
+        ],
+        "related_terms": [
+          "Role-Based Access Control",
+          "Manager",
+          "Integration with External Vacation-Balance System"
+        ],
+        "source_quote": "\"Manager-exclusive area listing employees under their responsibility with each person\u2019s remaining vacation days (read via external system).\""
+      },
+      {
+        "term": "HR Processing",
+        "definition": "The final operational step where HR handles manager-approved requests, adds any internal notes, and marks them as processed, often coordinating with payroll or other internal systems. HR processing confirms that a request has been fully completed from an administrative perspective.",
+        "synonyms": [
+          "HR Handling",
+          "Request Processing",
+          "HR Finalization"
+        ],
+        "related_terms": [
+          "HR Processing Area for Approved Requests",
+          "VacationRequest (Entity)",
+          "Integration with External Vacation-Balance System"
+        ],
+        "source_quote": "\"HR-specific tab showing only manager-approved requests, where HR can add internal notes and mark as processed.\""
+      },
+      {
+        "term": "National Holiday Data Import",
+        "definition": "The process of loading official holiday data for a given year from an external API into the Vacation Tool as JSON. This import keeps calendars accurate without manual data entry and is triggered by an Admin action.",
+        "synonyms": [
+          "Holiday Data Load",
+          "Yearly Holiday Import",
+          "Holiday Sync"
+        ],
+        "related_terms": [
+          "Admin Integration Controls for National Holidays",
+          "Holiday"
+        ],
+        "source_quote": "\"National holidays and initial yearly holiday data are imported from an external system as JSON via an API, triggered by an admin-controlled 'load year' action.\""
+      },
+      {
+        "term": "Simple, Robust Flow",
+        "definition": "The overall end-to-end vacation process where an employee submits a request, a manager approves or denies it, and HR then processes approved requests. This linear flow reduces confusion and ensures everyone understands the sequence of responsibilities.",
+        "synonyms": [
+          "End-to-End Vacation Workflow",
+          "Core Process Flow",
+          "Submission-to-Processing Chain"
+        ],
+        "related_terms": [
+          "Vacation Request Creation and Validation",
+          "Manager Approval/Denial Workflow",
+          "HR Processing"
+        ],
+        "source_quote": "\"Simple, robust flow and permissions follow: employee submits \u2192 manager approves/denies \u2192 HR processes.\""
+      }
+    ]
+  },
+  "status": "success",
+  "agent": "GlossaryAgent"
+}

@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vacationtool
+      POSTGRES_USER: vacation
+      POSTGRES_PASSWORD: vacation
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vacation -d vacationtool"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/vacationtool
+      DB_USER: vacation
+      DB_PASSWORD: vacation
+      SERVER_PORT: 8080
+      APP_SEED_DEMO_USER: "true"
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:

@@ -1,0 +1,42 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        name: SESSIONID
+        http-only: true
+        secure: ${SESSION_COOKIE_SECURE:true}
+        same-site: lax
+
+spring:
+  application:
+    name: vacation-tool
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/vacation_tool}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migrations
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+
+app:
+  seed-demo-user: true
+  demo-user:
+    username: demo
+    password: password
+    role: ADMIN
