@@ -35,6 +35,9 @@ public class Holiday {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "deprecation_reason")
+    private String deprecationReason;
+
     @PrePersist
     public void onCreate() {
         createdAt = Instant.now();
@@ -74,6 +77,14 @@ public class Holiday {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public String getDeprecationReason() {
+        return deprecationReason;
+    }
+
+    public void setDeprecationReason(String deprecationReason) {
+        this.deprecationReason = deprecationReason;
     }
 
     @Override

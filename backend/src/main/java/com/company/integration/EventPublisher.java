@@ -1,11 +1,12 @@
 package com.company.integration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import com.company.ops.EventPublishMonitor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -15,9 +16,12 @@ public class EventPublisher {
     private static final Logger log = LoggerFactory.getLogger(EventPublisher.class);
 
     private final Executor eventPublisherExecutor;
+    private final EventPublishMonitor eventPublishMonitor;
 
-    public EventPublisher(@Qualifier("eventPublisherExecutor") Executor eventPublisherExecutor) {
+    public EventPublisher(@Qualifier("eventPublisherExecutor") Executor eventPublisherExecutor,
+                          EventPublishMonitor eventPublishMonitor) {
         this.eventPublisherExecutor = eventPublisherExecutor;
+        this.eventPublishMonitor = eventPublishMonitor;
     }
 
     public void publishPostCommit(String eventType, Map<String, Object> payload) {
@@ -53,6 +57,7 @@ public class EventPublisher {
                 dispatch(eventType, payload, attempt + 1);
             } else {
                 log.error("Event publish permanently failed for {} after {} attempts", eventType, maxAttempts);
+                eventPublishMonitor.recordEventFailure(eventType, maxAttempts);
             }
         }
     }

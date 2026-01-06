@@ -59,7 +59,26 @@ public interface VacationRequestRepository extends JpaRepository<VacationRequest
     @Query("""
             SELECT vr FROM VacationRequest vr
             JOIN FETCH vr.user u
+            WHERE vr.status = :status
+              AND vr.processedAt IS NULL
+            ORDER BY vr.startDate ASC
+            """)
+    List<VacationRequest> findUnprocessedApproved(@Param("status") VacationRequestStatus status);
+
+    @Query("""
+            SELECT vr FROM VacationRequest vr
+            JOIN FETCH vr.user u
             WHERE vr.id = :id
             """)
     Optional<VacationRequest> findByIdWithUser(@Param("id") UUID id);
+
+    @Query("""
+            SELECT vr FROM VacationRequest vr
+            JOIN FETCH vr.user u
+            WHERE vr.id = :id
+              AND vr.status = :status
+              AND vr.processedAt IS NULL
+            """)
+    Optional<VacationRequest> findApprovedUnprocessedById(@Param("id") UUID id,
+                                                          @Param("status") VacationRequestStatus status);
 }

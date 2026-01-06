@@ -47,6 +47,12 @@ body {
   border: 1px solid var(--border);
 }
 
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -254,6 +260,83 @@ body {
   margin: 6px 0 0;
 }
 
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.form-field input,
+.form-field select {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+}
+
+.form-inline {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.checkbox-pill {
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.checkbox-pill input {
+  accent-color: var(--accent-strong);
+}
+
+.table {
+  margin-top: 12px;
+}
+
+.table-head,
+.table-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table-head {
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.6px;
+}
+
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.select-inline {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: var(--text);
+}
+
 .mini-list li {
   padding: 4px 0;
   border-bottom: 1px solid var(--border);
@@ -386,6 +469,12 @@ body {
   background: rgba(245, 138, 146, 0.1);
   border-color: rgba(245, 138, 146, 0.5);
   color: var(--denied);
+}
+
+.alert-success {
+  background: rgba(111, 207, 151, 0.12);
+  border-color: rgba(111, 207, 151, 0.4);
+  color: #0c7c4a;
 }
 
 .loading-bar {

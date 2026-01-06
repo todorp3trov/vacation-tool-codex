@@ -33,4 +33,8 @@ public interface TeamMembershipRepository extends JpaRepository<TeamMembership, 
     List<UUID> findActiveUserIdsForTeams(@Param("teamIds") Collection<UUID> teamIds,
                                          @Param("status") TeamMembershipStatus status,
                                          @Param("teamStatus") TeamStatus teamStatus);
+
+    List<TeamMembership> findByUserId(UUID userId);
+
+    List<TeamMembership> findByTeamId(UUID teamId);
 }

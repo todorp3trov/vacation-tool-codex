@@ -29,6 +29,9 @@ public class RoleService {
         if (codes.isEmpty()) {
             return "/";
         }
+        if (codes.contains("HR")) {
+            return "/hr/processing";
+        }
         return "/calendar";
     }
 

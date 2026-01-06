@@ -87,6 +87,7 @@ export default function CalendarPage({ initialData, initialRange, error: initial
   const [decisionLoading, setDecisionLoading] = useState(false);
 
   const isManager = useMemo(() => data?.roles?.some((r) => r.toUpperCase() === "MANAGER"), [data?.roles]);
+  const isHr = useMemo(() => data?.roles?.some((r) => r.toUpperCase() === "HR"), [data?.roles]);
 
   useEffect(() => {
     if (isManager && data?.managerPending?.length && !selectedId) {
@@ -195,9 +196,16 @@ export default function CalendarPage({ initialData, initialRange, error: initial
             <h1 className="page-title">Vacations</h1>
             <p className="muted">Shared calendar with role-aware actions.</p>
           </div>
-          <div className="range-chip">
-            <span className="pill neutral">Range</span>
-            <strong>{formatRangeLabel(range)}</strong>
+          <div className="header-actions">
+            <div className="range-chip">
+              <span className="pill neutral">Range</span>
+              <strong>{formatRangeLabel(range)}</strong>
+            </div>
+            {isHr && (
+              <button className="primary-btn" onClick={() => window.location.assign("/hr/processing")}>
+                HR Processing
+              </button>
+            )}
           </div>
         </header>
 

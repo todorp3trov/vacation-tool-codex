@@ -69,3 +69,20 @@ export type ManagerCalendarResponse = {
   vacations: VacationItem[];
   holidays: HolidayItem[];
 };
+
+export type HrProcessingItem = {
+  requestId: string;
+  employeeId: string;
+  employeeName: string;
+  startDate: string;
+  endDate: string;
+  numberOfDays: number;
+  status: string;
+  requestCode?: string | null;
+  managerNotes?: string | null;
+  hrNotes?: string | null;
+};
+
+export type HrProcessingDetail = {
+  request: HrProcessingItem;
+};

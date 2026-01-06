@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import com.company.model.ExternalDeductionStatus;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -60,6 +61,17 @@ public class VacationRequest {
 
     @Column(name = "hr_notes")
     private String hrNotes;
+
+    @Column(name = "processed_at")
+    private Instant processedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hr_id")
+    private User hr;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "external_deduction_status", length = 30)
+    private ExternalDeductionStatus externalDeductionStatus;
 
     @PrePersist
     public void onCreate() {
@@ -159,6 +171,30 @@ public class VacationRequest {
 
     public void setHrNotes(String hrNotes) {
         this.hrNotes = hrNotes;
+    }
+
+    public Instant getProcessedAt() {
+        return processedAt;
+    }
+
+    public void setProcessedAt(Instant processedAt) {
+        this.processedAt = processedAt;
+    }
+
+    public User getHr() {
+        return hr;
+    }
+
+    public void setHr(User hr) {
+        this.hr = hr;
+    }
+
+    public ExternalDeductionStatus getExternalDeductionStatus() {
+        return externalDeductionStatus;
+    }
+
+    public void setExternalDeductionStatus(ExternalDeductionStatus externalDeductionStatus) {
+        this.externalDeductionStatus = externalDeductionStatus;
     }
 
     @Override
